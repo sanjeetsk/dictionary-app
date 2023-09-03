@@ -1,48 +1,84 @@
+import { useWordContext } from "../WordContext";
+import { Link } from "react-router-dom";
+import { useEffect } from "react";
+import { useSelector, useDispatch } from "react-redux";
+import { fetchDataFailure, fetchDataRequest, fetchDataSuccess, addToHistory } from "../actions";
+import axios from "axios";
 
-import React from "react";
-import { useParams } from "react-router-dom";
-import { useSelector } from "react-redux";
 
 const WordDetails = () => {
-  const { word } = useParams();
-  const data = useSelector((state) => state.data.data);
 
-  const wordDetails = data.find((item) => item.word === word);
+    const { selectedWord } = useWordContext();
+    const loading = useSelector((state) => state.data.loading);
+    const data = useSelector((state) => state.data.data);
+    const error = useSelector((state) => state.data.error);
+    const history = useSelector((state) => state.history.history);
 
-  return (
-    <div>
-      <h1>Word Details for {word}</h1>
-      {wordDetails ? (
-        <div>
-          <h4>{wordDetails.word}</h4>
-          {wordDetails.phonetics &&
-            wordDetails.phonetics.length > 0 &&
-            wordDetails.phonetics.map((value, index) => (
-              <div className="phonetic" key={index}>
-                <p>{value.text}</p>
-                <audio controls>
-                  <source src={value.audio} type="audio/mp3" />
-                  Your browser does not support the audio element.
-                </audio>
-              </div>
-            ))}
-          <h5>Meanings:</h5>
-          <ul>
-            {wordDetails.meanings.map((meaning, index) => (
-              <div key={index}>
-                <h4>{meaning.partOfSpeech}</h4>
-                {meaning.definitions.map((means, index) => (
-                  <p key={index}>{means.definition}</p>
-                ))}
-              </div>
-            ))}
-          </ul>
+    const dispatch = useDispatch();
+
+    
+
+    useEffect(() => {
+        // Define an async function to fetch data
+        const fetchDataForWord = async () => {
+            dispatch(fetchDataRequest()); // Dispatch a loading action
+
+            try {
+                // Fetch data using Axios
+                const response = await axios.get(`https://api.dictionaryapi.dev/api/v2/entries/en/${selectedWord}`);
+                dispatch(fetchDataSuccess(response.data)); // Dispatch a success action with the data
+                if (!history.includes(selectedWord)) {
+                    dispatch(addToHistory(selectedWord)); // Dispatch addToHistory only if not already in history
+                }
+            } catch (err) {
+                dispatch(fetchDataFailure(err.message)); // Dispatch an error action with the error message
+            }
+        };
+
+        // Call the fetchDataForWord function when the component mounts
+            fetchDataForWord();
+    }, [selectedWord, dispatch, history]);
+
+    return (
+        <div className="WordDetails">
+            {loading && <h1>Loading...</h1>}
+            {error && <h1>Error: {error.message}</h1>}
+            {
+                !loading && Object.keys(data).length > 0 && data[0].meanings && (
+                    <div>
+                        <h4>{data[0].word}</h4>
+                        {
+                            data[0].phonetics && data[0].phonetics.length > 0 &&
+                            (
+                                data[0].phonetics.map((value, index) => (
+                                    <div className="phonetic" key={index}>
+                                        <p>{value.text}</p>
+                                        <audio controls>
+                                            <source src={value.audio} type="audio/mp3" />
+                                            Your browser does not support the audio element.
+                                        </audio>
+                                    </div>
+                                ))
+                            )
+                        }
+                        <h5>Meanings:</h5>
+                        <ul>
+                            {data[0].meanings.map((meaning, index) => (
+                                <div key={index}>
+                                    <h4>{meaning.partOfSpeech}</h4>
+                                    {
+                                        meaning.definitions.map((means, index) => (
+                                            <p key={index}>{means.definition}</p>
+                                        ))
+                                    }
+                                </div>
+                            ))}
+                        </ul>
+                        <Link to={`/word/${data[0].word}`} />
+                    </div>
+                )}
         </div>
-      ) : (
-        <p>Word details not found.</p>
-      )}
-    </div>
-  );
+    );
 };
 
 export default WordDetails;

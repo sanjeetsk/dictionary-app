@@ -5,12 +5,15 @@ import App from './App';
 import { BrowserRouter } from 'react-router-dom';
 import { Provider } from 'react-redux';
 import store from "./store";
+import { WordProvider } from './WordContext';
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
   <BrowserRouter>
     <Provider store={store}>
-      <App />
+      <WordProvider>
+        <App />
+      </WordProvider>
     </Provider>
   </BrowserRouter>
 );
