@@ -1,8 +1,9 @@
 
 import { useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
-import { fetchDataFailure, fetchDataRequest, fetchDataSuccess } from "../actions";
+import { fetchDataFailure, fetchDataRequest, fetchDataSuccess, addToHistory } from "../actions";
 import axios from "axios";
+import { Link } from "react-router-dom";
 
 const Home = () => {
     const loading = useSelector((state) => state.data.loading);
@@ -20,6 +21,7 @@ const Home = () => {
         try {
             const response = await axios.get(`https://api.dictionaryapi.dev/api/v2/entries/en/${inputText}`);
             dispatch(fetchDataSuccess(response.data));
+            dispatch(addToHistory(inputText));
         } catch (err) {
             dispatch(fetchDataFailure(err.message));
         }
@@ -63,6 +65,7 @@ const Home = () => {
                                 </div>
                             ))}
                         </ul>
+                        <Link to={`/word/${data[0].word}`}>View Word Details</Link>
                     </div>
                 )}
         </div>

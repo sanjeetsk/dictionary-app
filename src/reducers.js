@@ -1,11 +1,12 @@
-import { FETCH_DATA_REQUEST, FETCH_DATA_SUCCESS, FETCH_DATA_FAILURE } from "./actionTypes";
+import { FETCH_DATA_REQUEST, FETCH_DATA_SUCCESS, FETCH_DATA_FAILURE, ADD_TO_HISTORY, CLEAR_HISTORY } from "./actionTypes";
 
 import { combineReducers } from "redux";
 
 const initialState = {
     loading: true,
     data: [],
-    error: ""
+    error: "",
+    history: [],
 }
 
 const dataReducer = (state = initialState, action) => {
@@ -36,8 +37,26 @@ const dataReducer = (state = initialState, action) => {
     }
 }
 
+const historyReducer = (state = initialState, action) => {
+    switch (action.type) {
+      case ADD_TO_HISTORY:
+        return {
+          ...state,
+          history: [action.payload, ...state.history],
+        };
+      case CLEAR_HISTORY:
+        return {
+          ...state,
+          history: [],
+        };
+      default:
+        return state;
+    }
+}
+
 const rootReducer = combineReducers({
-    data: dataReducer
+    data: dataReducer,
+    history: historyReducer,
 })
 
 export default rootReducer;

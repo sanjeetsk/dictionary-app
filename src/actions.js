@@ -1,4 +1,4 @@
-import { FETCH_DATA_REQUEST, FETCH_DATA_SUCCESS, FETCH_DATA_FAILURE } from "./actionTypes";
+import { FETCH_DATA_REQUEST, FETCH_DATA_SUCCESS, FETCH_DATA_FAILURE, ADD_TO_HISTORY, CLEAR_HISTORY } from "./actionTypes";
 
 // action creator function
 export const fetchDataRequest = () => ({
@@ -15,3 +15,12 @@ export const fetchDataFailure = (error) => ({
     payload: error
 })
 
+
+export const addToHistory = (word) => ({
+    type: ADD_TO_HISTORY,
+    payload: word,
+});
+
+export const clearHistory = () => ({
+    type: CLEAR_HISTORY,
+});
