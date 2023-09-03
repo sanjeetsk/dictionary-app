@@ -1,0 +1,3 @@
+npx create-react-app .
+npm i react-roter-dom
+npm i axios redux react-redux redux-thunk
