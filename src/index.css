@@ -1,5 +1,5 @@
 /* Navbar Styles */
-*{
+* {
     margin: 0;
     padding: 0;
     box-sizing: border-box;
@@ -44,12 +44,50 @@
     color: #ff9900;
 }
 
-.home{
+.home {
     text-align: left;
     margin: 20px;
 }
 
-.history, .WordDetails{
+.history,
+.WordDetails {
     text-align: left;
     margin: 20px;
+}
+
+#input{
+    margin : auto ;
+    width: 250px;
+    padding: 2px;
+    outline: none;
+}
+
+#btn{
+    padding: 2px;
+    cursor: pointer;
+}
+
+#btn:hover{
+    transform: 1.01;
+}
+
+/* loader */
+/* styles.css (or any other CSS file you are using) */
+.loading-spinner {
+    border: 4px solid rgba(0, 0, 0, 0.3);
+    border-radius: 50%;
+    border-top: 4px solid #3498db;
+    width: 40px;
+    height: 40px;
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    0% {
+        transform: rotate(0deg);
+    }
+
+    100% {
+        transform: rotate(360deg);
+    }
 }

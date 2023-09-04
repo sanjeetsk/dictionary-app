@@ -17,8 +17,8 @@ const Home = () => {
 
     return (
         <div className="home">
-            <input type="text" value={inputText} onChange={(e) => setInputText(e.target.value)} placeholder="enter text" />
-            <button onClick={handleSearch}>Search</button>
+            <input type="text" id="input" value={inputText} onChange={(e) => setInputText(e.target.value)} placeholder="enter text" />
+            <button id="btn" onClick={handleSearch}>Search</button>
             {
                 searched &&
                 <WordDetails/>

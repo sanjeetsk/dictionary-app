@@ -1,4 +1,4 @@
-import { FETCH_DATA_REQUEST, FETCH_DATA_SUCCESS, FETCH_DATA_FAILURE, ADD_TO_HISTORY, CLEAR_HISTORY } from "./actionTypes";
+import { FETCH_DATA_REQUEST, FETCH_DATA_SUCCESS, FETCH_DATA_FAILURE, ADD_TO_HISTORY, CLEAR_HISTORY, CLEAR_ERROR } from "./actionTypes";
 
 import { combineReducers } from "redux";
 
@@ -28,8 +28,15 @@ const dataReducer = (state = initialState, action) => {
             return {
                 ...state,
                 loading: false,
+                data:[],
                 error: action.payload,
             }
+        case CLEAR_ERROR:
+            return {
+                ...state,
+                error: "", // Clear the error when explicitly requested
+            };
+
 
         default:
             return state
@@ -39,18 +46,18 @@ const dataReducer = (state = initialState, action) => {
 
 const historyReducer = (state = initialState, action) => {
     switch (action.type) {
-      case ADD_TO_HISTORY:
-        return {
-          ...state,
-          history: [action.payload, ...state.history],
-        };
-      case CLEAR_HISTORY:
-        return {
-          ...state,
-          history: [],
-        };
-      default:
-        return state;
+        case ADD_TO_HISTORY:
+            return {
+                ...state,
+                history: [action.payload, ...state.history],
+            };
+        case CLEAR_HISTORY:
+            return {
+                ...state,
+                history: [],
+            };
+        default:
+            return state;
     }
 }
 

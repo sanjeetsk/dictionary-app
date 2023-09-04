@@ -2,7 +2,7 @@ import { useWordContext } from "../WordContext";
 import { Link } from "react-router-dom";
 import { useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
-import { fetchDataFailure, fetchDataRequest, fetchDataSuccess, addToHistory } from "../actions";
+import { fetchDataFailure, fetchDataRequest, fetchDataSuccess, addToHistory, clearError} from "../actions";
 import axios from "axios";
 
 
@@ -16,8 +16,6 @@ const WordDetails = () => {
 
     const dispatch = useDispatch();
 
-    
-
     useEffect(() => {
         // Define an async function to fetch data
         const fetchDataForWord = async () => {
@@ -30,8 +28,10 @@ const WordDetails = () => {
                 if (!history.includes(selectedWord)) {
                     dispatch(addToHistory(selectedWord)); // Dispatch addToHistory only if not already in history
                 }
+                dispatch(clearError());
             } catch (err) {
-                dispatch(fetchDataFailure(err.message)); // Dispatch an error action with the error message
+                console.log(err.response.data.message);
+                dispatch(fetchDataFailure(err.response.data.message)); // Dispatch an error action with the error message
             }
         };
 
@@ -41,8 +41,8 @@ const WordDetails = () => {
 
     return (
         <div className="WordDetails">
-            {loading && <h1>Loading...</h1>}
-            {error && <h1>Error: {error.message}</h1>}
+            {loading && <div className="loading-spinner" />}
+            {error && <h4>{error}</h4>}
             {
                 !loading && Object.keys(data).length > 0 && data[0].meanings && (
                     <div>
@@ -51,6 +51,7 @@ const WordDetails = () => {
                             data[0].phonetics && data[0].phonetics.length > 0 &&
                             (
                                 data[0].phonetics.map((value, index) => (
+                                    value && value.audio &&(
                                     <div className="phonetic" key={index}>
                                         <p>{value.text}</p>
                                         <audio controls>
@@ -58,6 +59,8 @@ const WordDetails = () => {
                                             Your browser does not support the audio element.
                                         </audio>
                                     </div>
+                                    )
+                    
                                 ))
                             )
                         }
